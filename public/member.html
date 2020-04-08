@@ -9,20 +9,19 @@
           var arr ;
             var listMember = function(){
                 $("#tb").empty();
-                $.ajax("member",{success:function(data){
+                var keyword = $("#keyword").val();
+                var cname = $("#cname").val();
+                $.ajax("member",{data:{keyword: keyword, cname:cname},success:function(data){
                   arr = data;
-
                   $.each(data, function(idx, m){
                       var tr = $("<tr></tr>").attr("idx",idx);
-
                       $(tr).click(function(){
                         var i = $(this).attr("idx");
-                        $("#_id").val(   arr[i]._id  );
+                        $("#_id").val(  arr[i]._id  );
                         $("#name").val(  arr[i].name  );
-                        $("#age").val(   arr[i].age  );
+                        $("#age").val(  arr[i].age  );
                         $("#addr").val(  arr[i].addr  );
                       });
-                      
                       var td1 = $("<td></td>").html(m.name);
                       var td2 = $("<td></td>").html(m.age);
                       var td3 = $("<td></td>").html(m.addr);
@@ -53,6 +52,14 @@
               }})
           });
 
+          $("#btnSearch").click(function(){
+              // var keyword = $("#keyword").val();
+              // $.ajax("searchMember",{data:{keyword:keyword}  success:function(data){
+              //
+              // }});
+              listMember();
+          });
+
           listMember();
         });
     </script>
@@ -68,6 +75,12 @@
     <button type="button" id="btnAdd">등록</button>
     <button type="button" id="btnUpdate">수정</button>
     <button type="button" id="btnDelete">삭제</button>
+    <hr>
+      <select id="cname">
+        <option value="name">이름</option>
+        <option value="addr">주소</option>
+      </select> : <input type="text" id="keyword">
+      <button type="button" id="btnSearch">검색</button>
     <hr>
     <h2>회원목록</h2>
     <table border="1" width="80%">

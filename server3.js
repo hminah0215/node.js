@@ -64,40 +64,49 @@ app.get("/insertMember",function(request,response){
 
 
 //몽고db에 만든 member와 연결
-app.get("/member",function(request,response){
-  //response.send("ok");
-    const MongoClient = require('mongodb').MongoClient;
-    const assert = require('assert');
+//모든회원 출력, 검색어가 오면 검색을 하고 검색어가 오지 않으면 모든 회원목록 출력
+//주소 검색가능
+app.get("/member", function(request, response){
 
-    // Connection URL
-    const url = 'mongodb://localhost:27017';
+  const MongoClient = require('mongodb').MongoClient;
+  const RegExp = require('mongodb').RegExp;
+  const assert = require('assert');
 
-    // Database Name
-    const dbName = 'bit';
+  var keyword = request.param("keyword");
+  var cname = request.param("cname");
+  //console.log("검색어: "+keyword);
+  var doc = {}
+  if(keyword != null && keyword != ""){
+    doc[cname] = new RegExp(keyword,"i");
+    // doc = {cname:keyword}
+    console.log(doc);
+  }
 
-    // Create a new MongoClient
-    const client = new MongoClient(url);
+  // Connection URL
+  const url = 'mongodb://localhost:27017';
 
-    // Use connect method to connect to the Server
-    client.connect(function(err, client) {
-      assert.equal(null, err);
-      console.log("Connected correctly to server");
+  // Database Name
+  const dbName = 'bit';
 
-      const db = client.db(dbName);
+  // Create a new MongoClient
+  const client = new MongoClient(url);
 
-      const col = db.collection('member');
-
-        //select 쿼리
-        col.find().toArray(function(err, docs) {
-          //assert.equal(null, err);
-          client.close();
-
-          //find한 결과 배열을 응답
-          response.send(docs);
-        });
-    });
-})
-
+  // Use connect method to connect to the Server
+  client.connect(function(err, client) {
+    assert.equal(null, err);
+    console.log("Connected correctly to server");
+    const db = client.db(dbName);
+    const col = db.collection('member');
+      // Get first two documents that match the query
+      col.find(doc).toArray(function(err, docs) {
+      //  assert.equal(null, err);
+      //  assert.equal(2, docs.length);
+        // re = docs;
+        client.close();
+       response.send(docs);
+      });
+  });
+});
 app.all("/data.html",function(request,response){
   var output ="";
   output += "<!DOCTYPE html>";
