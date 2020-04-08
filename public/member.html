@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" >
+        $(function(){
+          var arr ;
+            var listMember = function(){
+                $("#tb").empty();
+                $.ajax("member",{success:function(data){
+                  arr = data;
+
+                  $.each(data, function(idx, m){
+                      var tr = $("<tr></tr>").attr("idx",idx);
+
+                      $(tr).click(function(){
+                        var i = $(this).attr("idx");
+                        $("#_id").val(   arr[i]._id  );
+                        $("#name").val(  arr[i].name  );
+                        $("#age").val(   arr[i].age  );
+                        $("#addr").val(  arr[i].addr  );
+                      });
+                      
+                      var td1 = $("<td></td>").html(m.name);
+                      var td2 = $("<td></td>").html(m.age);
+                      var td3 = $("<td></td>").html(m.addr);
+                      $(tr).append(td1, td2, td3);
+                      $("#tb").append(tr);
+                  });
+                }});
+            }
+
+          $("#btnAdd").click(function(){
+              var member = $("#f").serialize();
+              $.ajax("insertMember",{data:member, success:function(r){
+                listMember();
+              }})
+          });
+
+          $("#btnUpdate").click(function(){
+              var member = $("#f").serialize();
+              $.ajax("updateMember",{data:member, success:function(r){
+                listMember();
+              }})
+          });
+
+          $("#btnDelete").click(function(){
+              var member = $("#f").serialize();
+              $.ajax("deleteMember",{data:member, success:function(r){
+                listMember();
+              }})
+          });
+
+          listMember();
+        });
+    </script>
+  </head>
+  <body>
+    <h2>회원등록</h2>
+    <form id="f">
+        <input type="hidden" name="_id" id="_id" />
+        이름 : <input type="text" name="name" id="name"><br>
+        나이 : <input type="text" name="age" id="age"><br>
+        주소 : <input type="text" name="addr" id="addr"><br>
+    </form>
+    <button type="button" id="btnAdd">등록</button>
+    <button type="button" id="btnUpdate">수정</button>
+    <button type="button" id="btnDelete">삭제</button>
+    <hr>
+    <h2>회원목록</h2>
+    <table border="1" width="80%">
+        <thead>
+          <tr>
+            <td>이름</td>
+            <td>나이</td>
+            <td>주소</td>
+          </tr>
+        </thead>
+        <tbody id="tb">
+        </tbody>
+    </table>
+  </body>
+</html>

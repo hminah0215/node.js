@@ -17,7 +17,38 @@ app.use(express.static("public"));
 app.use(express.bodyParser());
 app.use(app.router);
 
-//몽고db에 만들어둔 member 컬렉션에 insert
+//몽고db에 만들어둔 member 컬렉션에 list
+app.all("/listMember",function(request, response){
+    member.listMember(request, response);
+});
+
+//몽고db에 만들어둔 member 컬렉션 update
+app.get("/updateMember", function(request,respone){
+  var name = request.param("name");
+  var age = request.param("age");
+  var addr = request.param("addr");
+  var _id = request.param("_id");
+
+  var doc = {name:name, age:age,addr:addr};
+  console.log(doc);
+  member.updateMember(doc,_id);
+  respone.send(doc);
+})
+
+//몽고db에 만들어둔 member 컬렉션 delete
+app.get("/deleteMember", function(request,respone){
+  var name = request.param("name");
+  var age = request.param("age");
+  var addr = request.param("addr");
+  var _id = request.param("_id");
+
+  var doc = {name:name, age:age,addr:addr};
+  console.log(doc);
+  member.deleteMember(doc,_id);
+  respone.send(doc);
+})
+
+//몽고db에 만들어둔 member 컬렉션 insert
 app.get("/insertMember",function(request,response){
   var name = request.param("name");
   var age = request.param("age");
@@ -29,7 +60,7 @@ app.get("/insertMember",function(request,response){
   member.insertMember(doc);
 
   response.send(doc);
-}); //inser끝
+}); //insert끝
 
 
 //몽고db에 만든 member와 연결
