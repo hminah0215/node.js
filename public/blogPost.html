@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+      #saved{
+        visibility: hidden;
+      }
+    </style>
+      <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+      <script type="text/javascript">
+        $(function(){
+
+          $("#write").click(function(){
+            $("#saved").css("visibility", "hidden");
+            $("#contentarea").css("visibility", "visible");
+
+            $("#title").val("");
+            $("#content").val("");
+          });
+
+          $("#btnSave").click(function(){
+              var data = $("#f").serialize();
+              $.ajax("blogInsert", {data:data, success:function(r){
+                $("#_id").html(r);
+                $("#saved").css("visibility", "visible");
+                $("#contentarea").css("visibility", "hidden");
+              }});
+          });
+        });
+      </script>
+  </head>
+  <body>
+    <div id="contentarea">
+        <div id="innercontentarea">
+          <form id="f">
+              <h3>Title</h3>
+              <p>
+                <input type="text" name="title" id="title">
+              </p>
+
+              <h3>Content</h3>
+              <p>
+                <textarea name="content" id="content" rows="20" cols="80"></textarea>
+              </p>
+          </form>
+          <p>
+              <button  id="btnSave"  type="button" name="button">Save</button>
+          </p>
+        </div>
+    </div>
+
+    <p id="saved">
+      Article saved. _id : <span id="_id"></span>
+      <a href="#" id="write">Write another one?</a>
+    </p>
+  </body>
+</html>
